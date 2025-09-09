@@ -45,7 +45,9 @@ html = """
         </form>
         
         <script>
-            var ws = new WebSocket("ws://localhost:8000/testing/realtest");
+            var protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            var wsUrl = protocol + '//' + window.location.host + '/testing/realtest';
+            var ws = new WebSocket(wsUrl);
             var currentStreamingMessage = null;
             
             ws.onopen = function() {
