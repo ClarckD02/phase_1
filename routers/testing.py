@@ -20,64 +20,12 @@ html = """
         <style>
             body { font-family: Arial, sans-serif; margin: 20px; }
             .upload-section { border: 2px dashed #ccc; padding: 20px; margin: 20px 0; text-align: center; }
-            #messages { 
-                border: 1px solid #ccc; 
-                height: 500px; 
-                overflow-y: scroll; 
-                padding: 15px; 
-                margin: 10px 0; 
-                background: #f9f9f9; 
-                font-family: 'Segoe UI', Arial, sans-serif;
-            }
-            .message { 
-                margin: 10px 0; 
-                padding: 12px; 
-                line-height: 1.5;
-                word-wrap: break-word;
-                clear: both;
-            }
-            .user { 
-                background: #e3f2fd; 
-                border-radius: 8px; 
-                border-left: 4px solid #2196f3;
-                margin-left: 20px;
-            }
-            .assistant { 
-                background: #f3e5f5; 
-                border-radius: 8px; 
-                border-left: 4px solid #9c27b0;
-                margin-right: 20px;
-                white-space: pre-wrap; /* Preserve formatting and line breaks */
-            }
-            .system-message {
-                background: #e8f5e8;
-                border-left: 4px solid #4caf50;
-                font-style: italic;
-                color: #2e7d32;
-            }
-            button { 
-                padding: 10px 20px; 
-                margin: 5px; 
-                border: none; 
-                border-radius: 4px; 
-                background: #2196f3; 
-                color: white; 
-                cursor: pointer;
-            }
-            button:hover { background: #1976d2; }
-            #messageText { 
-                width: 70%; 
-                padding: 10px; 
-                border: 1px solid #ddd; 
-                border-radius: 4px;
-            }
-            .section-header {
-                font-weight: bold;
-                color: #1976d2;
-                border-bottom: 1px solid #ddd;
-                padding-bottom: 5px;
-                margin: 10px 0;
-            }
+            #messages { border: 1px solid #ccc; height: 400px; overflow-y: scroll; padding: 10px; margin: 10px 0; background: #f9f9f9; }
+            .message { margin: 5px 0; padding: 5px; }
+            .user { background: #e3f2fd; border-radius: 5px; padding: 8px; }
+            .assistant { background: #f3e5f5; border-radius: 5px; padding: 8px; }
+            button { padding: 8px 16px; margin: 5px; }
+            #messageText { width: 70%; padding: 8px; }
         </style>
     </head>
     <body>
@@ -103,8 +51,7 @@ html = """
             var currentStreamingMessage = null;
             
             ws.onopen = function() {
-                addMessage("Connected to Environmental Assessment Assistant", "assistant system-message");
-                addMessage("Hello! I'm your environmental assessment assistant. Upload a PDF document to begin generating sections 5.2.3 and 5.2.4.", "assistant");
+                addMessage("Connected to Environmental Assessment Assistant", "assistant");
             };
             
             ws.onmessage = function(event) {
@@ -114,13 +61,7 @@ html = """
                 if (text.includes("---") || text.includes("Processing") || text.includes("You:") || text.includes("Uploading:") || text.includes("Error:") || text.includes("Please") || text.includes("I have") || text.includes("Ready to") || text.includes("Using groundwater") || text.includes("Calculating") || text.includes("Generating") || text.includes("Received") || text.includes("Failed to") || text.includes("Extracted address:") || text.includes("Found EPA ECHO") || text.includes("Fetching") || text.includes("Enhanced compliance")) {
                     // Start a new message
                     currentStreamingMessage = null;
-                    
-                    // Format section headers specially
-                    if (text.includes("--- Section")) {
-                        addMessage(text, "assistant section-header");
-                    } else {
-                        addMessage(text, "assistant");
-                    }
+                    addMessage(text, "assistant");
                 } else {
                     // This is likely a streaming chunk, append to current message
                     if (currentStreamingMessage) {
@@ -133,44 +74,19 @@ html = """
             };
             
             ws.onerror = function(error) {
-                addMessage("Connection error - please refresh the page", "assistant system-message");
+                addMessage("Connection error", "assistant");
             };
             
             function addMessage(text, type) {
                 var messages = document.getElementById('messages');
                 var message = document.createElement('div');
                 message.className = 'message ' + type;
-                
-                // Format different types of messages
-                if (text.includes("Uploading:")) {
-                    message.innerHTML = `<strong>📁 ${text}</strong>`;
-                } else if (text.includes("Processing")) {
-                    message.innerHTML = `<strong>⚙️ ${text}</strong>`;
-                } else if (text.includes("Extracted address:")) {
-                    message.innerHTML = `<strong>📍 ${text}</strong>`;
-                } else if (text.includes("complete!")) {
-                    message.innerHTML = `<strong>✅ ${text}</strong>`;
-                } else if (text.includes("--- Section")) {
-                    message.innerHTML = `<strong>${text}</strong>`;
-                } else {
-                    // Clean up address extraction display
-                    if (text.includes("EXTRACTION FOR 5.2.")) {
-                        var addressMatch = text.match(/Subject Property Address: (.+?)(?:\n|$)/);
-                        if (addressMatch) {
-                            message.textContent = `Extracted address: ${addressMatch[1]}`;
-                        } else {
-                            message.textContent = text;
-                        }
-                    } else {
-                        message.textContent = text;
-                    }
-                }
-                
+                message.textContent = text;
                 messages.appendChild(message);
                 messages.scrollTop = messages.scrollHeight;
                 
                 // If this is an assistant message, set it as the current streaming target
-                if (type.includes('assistant') && !type.includes('system-message')) {
+                if (type === 'assistant') {
                     currentStreamingMessage = message;
                 }
             }
