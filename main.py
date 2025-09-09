@@ -1,6 +1,8 @@
 # extract_summarize/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import logging
+logging.basicConfig(level=logging.INFO)
 
 # Import routers from local package
 from routers import testing
@@ -23,7 +25,7 @@ def create_app() -> FastAPI:
     )
 
     # Routers
-    app.include_router(testing.router)
+    # app.include_router(testing.router)
 
     @app.get("/", tags=["meta"])
     def root():
@@ -47,4 +49,6 @@ if __name__ == "__main__":
     import uvicorn
     import os
     port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
+    logging.info(f"Port: {port}")
     uvicorn.run(app, host="0.0.0.0", port=port)
