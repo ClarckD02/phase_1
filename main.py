@@ -25,7 +25,7 @@ def create_app() -> FastAPI:
     )
 
     # Routers
-    # app.include_router(testing.router)
+    app.include_router(testing.router)
 
     @app.get("/", tags=["meta"])
     def root():
