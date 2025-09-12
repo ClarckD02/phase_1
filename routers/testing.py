@@ -243,7 +243,7 @@ async def process_pdf(websocket, message, session, extractor, formatter, summari
             await websocket.send_text("Processing main property document...")
             
             # Generate Section 5.2.1 with ECHO enhancement if available
-            await websocket.send_text("--- Section 5.2.3 ---")
+            # await websocket.send_text("--- Section 5.2.3 ---")
             
             if echo_summary:
                 # Enhanced context for Section 5.2.1
@@ -326,7 +326,7 @@ async def handle_intelligent_chat(websocket, message, session, summarizer):
     user_question = message.get("content", "").strip()
     
     if not session.get("main_document"):
-        await websocket.send_text("please upload the subject propety adress and  pdf file for the subject property")
+        await websocket.send_text("Please upload the subject propety adress and  pdf file for the subject property")
         return
     
     # Check if user wants Section 5.2.2
