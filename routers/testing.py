@@ -329,7 +329,7 @@ async def handle_intelligent_chat(websocket, message, session, summarizer):
     user_question = message.get("content", "").strip()
     
     if not session.get("main_document"):
-        await websocket.send_text("Please upload a PDF document first so I can answer questions about it.")
+        await websocket.send_text("please upload the subject propety adress and  pdf file for the subject property")
         return
     
     # Check if user wants Section 5.2.2
