@@ -278,9 +278,6 @@ Instructions: Generate Section 5.2.3 incorporating both the environmental databa
             session["subject_address"] = result_521.get("subject_address")
             session["workflow_stage"] = "can_upload_surrounding"
             
-            if session["subject_address"]:
-                await websocket.send_text(f"Extracted address: {session['subject_address']}")
-            
             if echo_summary:
                 await websocket.send_text("Section 5.2.3 generated with enhanced EPA ECHO compliance data!")
             else:
